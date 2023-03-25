@@ -183,6 +183,8 @@ fn channel_full_cycle() {
 	let node_b_addr = format!("{}@{}", node_b.node_id(), node_b.listening_address().unwrap());
 	node_a.connect_open_channel(&node_b_addr, 50000, true).unwrap();
 
+	assert_eq!(node_a.list_peers(), [node_b.node_id()]);
+
 	let funding_txo = loop {
 		let details = node_a.list_channels();
 

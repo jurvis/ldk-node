@@ -1176,6 +1176,14 @@ impl Node {
 	pub fn payment_info(&self, payment_hash: &PaymentHash) -> Option<PaymentInfo> {
 		self.payment_store.get(payment_hash)
 	}
+
+	/// List node's connected peers.
+	pub fn list_peers(&self) -> Vec<PublicKey> {
+		self.peer_manager.get_peer_node_ids()
+			.iter()
+			.map(|(pubkey, _)| *pubkey)
+			.collect::<Vec<_>>()
+	}
 }
 
 async fn connect_peer_if_necessary(
