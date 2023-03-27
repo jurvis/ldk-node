@@ -34,6 +34,7 @@ mod peer_store;
 mod tests;
 mod types;
 mod wallet;
+mod channel;
 
 pub use bitcoin;
 pub use lightning;
@@ -59,9 +60,7 @@ use logger::{log_error, log_info, FilesystemLogger, Logger};
 use lightning::chain::keysinterface::EntropySource;
 use lightning::chain::{chainmonitor, BestBlock, Confirm, Watch};
 use lightning::ln::channelmanager;
-use lightning::ln::channelmanager::{
-	ChainParameters, ChannelDetails, ChannelManagerReadArgs, PaymentId, Retry,
-};
+use lightning::ln::channelmanager::{ChainParameters, ChannelManagerReadArgs, PaymentId, Retry};
 use lightning::ln::peer_handler::{IgnoringMessageHandler, MessageHandler};
 use lightning::ln::{PaymentHash, PaymentPreimage, PaymentSecret};
 use lightning::routing::gossip::P2PGossipSync;
@@ -99,6 +98,7 @@ use std::str::FromStr;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex, RwLock};
 use std::time::{Duration, Instant, SystemTime};
+use crate::channel::{ChannelDetails, OutPoint};
 
 uniffi::include_scaffolding!("ldk_node");
 
@@ -754,7 +754,11 @@ impl Node {
 
 	/// Retrieve a list of known channels.
 	pub fn list_channels(&self) -> Vec<ChannelDetails> {
-		self.channel_manager.list_channels()
+		self.channel_manager
+			.list_channels()
+			.iter()
+			.map(|c|  c.clone().into())
+			.collect()
 	}
 
 	/// Connect to a node and open a new channel. Disconnects and re-connects are handled automatically
