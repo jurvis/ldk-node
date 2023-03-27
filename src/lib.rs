@@ -101,8 +101,8 @@ use payment_store::PaymentInfoStorage;
 pub use payment_store::{PaymentDirection, PaymentInfo, PaymentStatus};
 use peer_store::{PeerInfo, PeerInfoStorage};
 use types::{
-	ChainMonitor, ChannelManager, GossipSync, KeysManager, Network, NetworkGraph, OnionMessenger,
-	PeerManager, Scorer,
+	ChainMonitor, ChannelDetails, ChannelManager, GossipSync, KeysManager, Network, NetworkGraph,
+	OnionMessenger, OutPoint, PeerManager, Scorer,
 };
 pub use types::{ChannelId, UserChannelId};
 use wallet::Wallet;
@@ -112,7 +112,7 @@ use logger::{log_error, log_info, FilesystemLogger, Logger};
 use lightning::chain::keysinterface::EntropySource;
 use lightning::chain::{chainmonitor, BestBlock, Confirm, Watch};
 use lightning::ln::channelmanager::{
-	self, ChainParameters, ChannelDetails, ChannelManagerReadArgs, PaymentId, Retry,
+	self, ChainParameters, ChannelManagerReadArgs, PaymentId, Retry,
 };
 use lightning::ln::peer_handler::{IgnoringMessageHandler, MessageHandler};
 use lightning::ln::{PaymentHash, PaymentPreimage, PaymentSecret};
@@ -853,7 +853,7 @@ impl Node {
 
 	/// Retrieve a list of known channels.
 	pub fn list_channels(&self) -> Vec<ChannelDetails> {
-		self.channel_manager.list_channels()
+		self.channel_manager.list_channels().iter().map(|c| c.clone().into()).collect()
 	}
 
 	/// Connect to a node on the peer-to-peer network.

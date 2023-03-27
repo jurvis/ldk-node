@@ -40,7 +40,7 @@ fn channel_full_cycle() {
 	assert_eq!(node_a.list_peers(), [node_b.node_id()]);
 
 	let funding_txo = loop {
-		let details = node_a.list_channels();
+		let details = node_a.channel_manager.list_channels();
 
 		if details.is_empty() || details[0].funding_txo.is_none() {
 			std::thread::sleep(Duration::from_secs(1));

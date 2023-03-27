@@ -52,6 +52,7 @@ interface Node {
 	Invoice receive_variable_amount_payment([ByRef]string description, u32 expiry_secs);
 	PaymentInfo? payment_info([ByRef]PaymentHash payment_hash);
 	sequence<PublicKey> list_peers();
+	sequence<ChannelDetails> list_channels();
 };
 
 [Error]
@@ -109,6 +110,29 @@ dictionary PaymentInfo {
 	u64? amount_msat;
 	PaymentDirection direction;
 	PaymentStatus status;
+};
+
+dictionary OutPoint {
+    string txid;
+    u16 index;
+};
+
+dictionary ChannelDetails {
+    ChannelId channel_id;
+    PublicKey counterparty;
+    OutPoint? funding_txo;
+    u64? short_channel_id;
+    u64 channel_value_satoshis;
+    u64 balance_msat;
+    u64 outbound_capacity_msat;
+    u64 inbound_capacity_msat;
+    u32? confirmations_required;
+    u32? confirmations;
+    boolean is_outbound;
+    boolean is_channel_ready;
+    boolean is_usable;
+    boolean is_public;
+    u16? cltv_expiry_delta;
 };
 
 [Custom]
