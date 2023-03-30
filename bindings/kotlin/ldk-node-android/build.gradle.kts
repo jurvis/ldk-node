@@ -18,7 +18,7 @@ val libraryVersion: String by project
 // finds a staging profile with the correct group (group is otherwise set as "")
 // and knows whether to publish to a SNAPSHOT repository or not
 // https://github.com/gradle-nexus/publish-plugin#applying-the-plugin
-group = "org.lightningdevkit"
+group = "co.jurvis"
 version = libraryVersion
 
 nexusPublishing {
