@@ -102,7 +102,7 @@ pub use payment_store::{PaymentDirection, PaymentInfo, PaymentStatus};
 use peer_store::{PeerInfo, PeerInfoStorage};
 use types::{
 	ChainMonitor, ChannelDetails, ChannelManager, GossipSync, KeysManager, Network, NetworkGraph,
-	OnionMessenger, OutPoint, PeerManager, Scorer,
+	OnionMessenger, OutPoint, PeerDetails, PeerManager, Scorer,
 };
 pub use types::{ChannelId, UserChannelId};
 use wallet::Wallet;
@@ -1343,8 +1343,17 @@ impl Node {
 	}
 
 	/// List node's connected peers.
-	pub fn list_peers(&self) -> Vec<PublicKey> {
-		self.peer_manager.get_peer_node_ids().iter().map(|(pubkey, _)| *pubkey).collect::<Vec<_>>()
+	pub fn list_peers(&self) -> Vec<PeerDetails> {
+		let active_connected_peers: Vec<PublicKey> =
+			self.peer_manager.get_peer_node_ids().iter().map(|p| p.0).collect();
+		self.peer_store
+			.list_peers()
+			.iter()
+			.map(|p| PeerDetails {
+				node_id: p.pubkey,
+				is_connected: active_connected_peers.contains(&p.pubkey),
+			})
+			.collect()
 	}
 }
 

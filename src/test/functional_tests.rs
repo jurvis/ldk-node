@@ -37,7 +37,10 @@ fn channel_full_cycle() {
 		.connect_open_channel(&node_b.node_id(), &node_b.listening_address().unwrap(), 50000, true)
 		.unwrap();
 
-	assert_eq!(node_a.list_peers(), [node_b.node_id()]);
+	assert_eq!(
+		node_a.list_peers().iter().map(|p| p.node_id).collect::<Vec<_>>(),
+		[node_b.node_id()]
+	);
 
 	let funding_txo = loop {
 		let details = node_a.channel_manager.list_channels();

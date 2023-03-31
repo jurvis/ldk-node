@@ -431,3 +431,13 @@ impl From<LdkOutpoint> for OutPoint {
 		OutPoint { txid: value.txid.to_string(), index: value.index }
 	}
 }
+
+/// Details about peers the user is connected to. As returned by [`Node::list_peers`].
+///
+/// [`Node::list_peers`]: [`crate::Node::list_peers`]
+pub struct PeerDetails {
+	/// Our peer's node ID.
+	pub node_id: PublicKey,
+	/// Indicates whether or not the user is currently has an active connection with the peer.
+	pub is_connected: bool,
+}
