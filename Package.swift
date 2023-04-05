@@ -2,7 +2,7 @@
 import PackageDescription
 
 let tag = "0.0.1"
-let checksum = "35aa9716c6f6bc5a2b03dcf2b1447175e9c904574390b3a40b8ed4bd4d5fe53c"
+let checksum = "1347f7d73b5a634d7602976e9a6813fe0f8e591e56ced42904c778ba3e654649"
 let url = "https://github.com/jurvis/ldk-node/releases/download/\(tag)/ldk_nodeFFI.xcframework.zip"
 
 let package = Package(
@@ -14,12 +14,17 @@ let package = Package(
     products: [
         .library(
             name: "LightningDevKitNode",
-            targets: ["LightningDevKitNode"]
+            targets: ["ldk_nodeFFI", "LightningDevKitNode"]
         )
     ],
     targets: [
-        .binaryTarget(
+        .target(
             name: "LightningDevKitNode",
+            dependencies: ["ldk_nodeFFI"],
+            path: "./bindings/swift/Sources"
+        ),
+        .binaryTarget(
+            name: "ldk_nodeFFI",
             url: url,
             checksum: checksum
         )
