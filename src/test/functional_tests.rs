@@ -46,6 +46,10 @@ fn channel_full_cycle() {
 		)
 		.unwrap();
 
+	assert_eq!(
+		node_a.list_peers().iter().map(|p| p.node_id).collect::<Vec<_>>(),
+		[node_b.node_id()]
+	);
 	expect_event!(node_a, ChannelPending);
 
 	let funding_txo = match node_b.next_event() {
