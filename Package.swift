@@ -1,8 +1,8 @@
 // swift-tools-version:5.5
 import PackageDescription
 
-let tag = "0.0.1"
-let checksum = "1347f7d73b5a634d7602976e9a6813fe0f8e591e56ced42904c778ba3e654649"
+let tag = "0.0.3"
+let checksum = "ff4ccadb02d33b085e2358745e18b1a4e3539ed2c4861f5b58c374be88cf7a7d"
 let url = "https://github.com/jurvis/ldk-node/releases/download/\(tag)/ldk_nodeFFI.xcframework.zip"
 
 let package = Package(
