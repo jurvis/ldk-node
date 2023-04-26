@@ -1,6 +1,6 @@
 use crate::test::utils::*;
 use crate::test::utils::{expect_event, random_config};
-use crate::{Builder, Error, Event, PaymentDirection, PaymentStatus};
+use crate::{Builder, Error, Event, Network, PaymentDirection, PaymentStatus};
 
 use bitcoin::Amount;
 
@@ -39,7 +39,7 @@ fn channel_full_cycle() {
 	node_a
 		.connect_open_channel(
 			node_b.node_id(),
-			*node_b.listening_address().unwrap(),
+			node_b.listening_address().unwrap(),
 			funding_amount_sat,
 			Some(push_msat),
 			true,
@@ -77,10 +77,10 @@ fn channel_full_cycle() {
 	expect_event!(node_a, ChannelReady);
 
 	let channel_id = match node_b.next_event() {
-		ref e @ Event::ChannelReady { channel_id, .. } => {
+		ref e @ Event::ChannelReady { ref channel_id, .. } => {
 			println!("{} got event {:?}", std::stringify!(node_b), e);
 			node_b.event_handled();
-			channel_id
+			channel_id.clone()
 		}
 		ref e => {
 			panic!("{} got unexpected event!: {:?}", std::stringify!(node_b), e);
@@ -240,7 +240,7 @@ fn channel_open_fails_when_funds_insufficient() {
 		Err(Error::InsufficientFunds),
 		node_a.connect_open_channel(
 			node_b.node_id(),
-			*node_b.listening_address().unwrap(),
+			node_b.listening_address().unwrap(),
 			120000,
 			None,
 			true
@@ -254,7 +254,7 @@ fn connect_to_public_testnet_esplora() {
 	let esplora_url = electrsd.esplora_url.as_ref().unwrap();
 	let mut config = random_config(&esplora_url);
 	config.esplora_server_url = "https://blockstream.info/testnet/api".to_string();
-	config.network = bitcoin::Network::Testnet;
+	config.network = Network(bitcoin::Network::Testnet);
 	let node = Builder::from_config(config).build();
 	node.start().unwrap();
 	node.sync_wallets().unwrap();
